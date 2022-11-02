@@ -8,19 +8,23 @@ import os
 import calendar
 import datetime
 
-def main(path, saveDir):
+# remove all file writing and just print to command line maybe,
+# include stops between so user can go through at own pace
+# maybe add ability to customize hello message from "good morning"
+
+# def main(path, saveDir):
+def main(path):
     # path = "2022_10-28_patch_compliance.xlsx"
     wb = openpyxl.load_workbook(path[1])
     sh = wb["all"]
 
-    filtered = []
-    bySite = []
-    siteListHolder = []
     tempOn = []
+    tempOnSize = 0
     tempOff = []
+    tempOffSize = 0
     siteHolder = sh.cell(2,8)
 
-    messageP1 = "Good Morning!\n\nWe noticed that a couple of your systems appear to be out of date or offline.\n\n"
+    message = "Good Morning!\n\nWe noticed that a couple of your systems appear to be "
 
 
     # itterate through rows (start at 2 avoid header)
@@ -34,16 +38,34 @@ def main(path, saveDir):
         # add status to on or off holders
         if (currStatus == "on"):
             tempOn.append([currName,currLastUser])
+            tempOnSize += 1
         elif (currStatus == "off"):
             tempOff.append([currName,currLastUser])
+            tempOffSize += 1
         
         if (currSite != siteHolder):
             print(currSite)
-            print(f"on: {findLen(tempOn)}")
-            print(f"off: {findLen(tempOff)}")
+            print(f"on: {tempOnSize}")
+            print(f"off: {tempOffSize}")
+
+            if ((tempOn > 0)  & (tempOff > 0)):
+                message = message + "out of date or offline.\n\n"
+            elif ((tempOn > 0)  & (tempOff == 0)):
+                message = message + "out of date.\n\n"
+            elif ((tempOff > 0)  & (tempOn == 0)):
+                message = message + "offline.\n\n"
+
+            if (tempOn > 0):
+                message = message + "Please let us know a good time to schedule a reboot for these systems:\n"
+                for i in tempOn:
+                    # write to file here
+                    print(f"{tempOn[0]}, last user {tempOn[1]}")
+            
 
             tempOn = []
+            tempOnSize = 0
             tempOff = []
+            tempOffSize = 0
             siteHolder = currSite
             # open file ~currSite~.txt
                 # analyze on and off to determine format of doc
@@ -70,12 +92,6 @@ def writeToFile(fileName, contents, saveDir):
     f = open(filePath, "a")
     f.write(contents)
     f.close()
-
-def findLen(tempList):
-    count = 0
-    for i in tempList:
-        count += 1
-    return count
     
 if __name__=="__main__":
     date = datetime.datetime.utcnow()
@@ -87,21 +103,24 @@ if __name__=="__main__":
 
     os.mkdir(os.path.join(currDir,dirFolderName))
     print("Creating new dir \"" + dirFolderName + "\"")
-    main(sys.argv, dirFolderName)
+    # main(sys.argv, dirFolderName)
+    main(sys.argv)
 
-        
-    itterator = 0
+    # not working properly, runs mutliple times when main() is run
+    # itterator = 0
 
-    while True:
-        try:
-
-            break
-        except:
-            if itterator < 10:
-                itterator += 1
-                dirFolderName = (newDir + "(" + str(itterator) + ")")
-            else:
-                print("Failsafe: too many folders with same name convention")
-                break
+    # while True:
+    #     try:
+    #         # os.mkdir(os.path.join(currDir,dirFolderName))
+    #         # print("Creating new dir \"" + dirFolderName + "\"")
+    #         # main(sys.argv, dirFolderName)
+    #         break
+    #     except:
+    #         if itterator < 10:
+    #             itterator += 1
+    #             dirFolderName = (newDir + "(" + str(itterator) + ")")
+    #         else:
+    #             print("Failsafe: too many folders with same name convention")
+    #             break
             
         
