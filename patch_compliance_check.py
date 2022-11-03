@@ -5,7 +5,6 @@
 import openpyxl
 import sys
 import os
-import calendar
 import datetime
 
 # remove all file writing and just print to command line maybe,
@@ -19,17 +18,16 @@ def main(path):
     sh = wb["all"]
 
     tempOn = []
-    tempOnSize = 0
+    tempOnLen = 0
     tempOff = []
-    tempOffSize = 0
-    siteHolder = sh.cell(2,8)
+    tempOffLen = 0
+    siteHolder = sh.cell(2,8).value
 
-    message = "Good Morning!\n\nWe noticed that a couple of your systems appear to be "
-
+    input(f"_____Press \"Enter\" to move onto {siteHolder}_____")
 
     # itterate through rows (start at 2 avoid header)
     # index bySite [n][0] is on [n][1] is off
-    for row in range(2, sh.max_row+1): 
+    for row in range(2, sh.max_row+2): 
         currSite = sh.cell(row,8).value
         currLastUser = sh.cell(row,5).value
         currName = sh.cell(row,2).value
@@ -38,49 +36,54 @@ def main(path):
         # add status to on or off holders
         if (currStatus == "on"):
             tempOn.append([currName,currLastUser])
-            tempOnSize += 1
+            tempOnLen += 1
         elif (currStatus == "off"):
             tempOff.append([currName,currLastUser])
-            tempOffSize += 1
+            tempOffLen += 1
         
         if (currSite != siteHolder):
-            print(currSite)
-            print(f"on: {tempOnSize}")
-            print(f"off: {tempOffSize}")
+            print()
+            message = "Good Morning!\n\nWe noticed that a couple of your systems appear to be "
+            header = "\tPC Name\t\t\tLast User\n"
 
-            if ((tempOn > 0)  & (tempOff > 0)):
-                message = message + "out of date or offline.\n\n"
-            elif ((tempOn > 0)  & (tempOff == 0)):
-                message = message + "out of date.\n\n"
-            elif ((tempOff > 0)  & (tempOn == 0)):
-                message = message + "offline.\n\n"
+            # used for testing
+            # print(siteHolder)
+            # print(f"on: {tempOnLen}")
+            # print(f"off: {tempOffLen}")
 
-            if (tempOn > 0):
-                message = message + "Please let us know a good time to schedule a reboot for these systems:\n"
-                for i in tempOn:
-                    # write to file here
-                    print(f"{tempOn[0]}, last user {tempOn[1]}")
+            if ((tempOnLen > 0)  & (tempOffLen > 0)):
+                message = message + "out of date or offline.\n"
+            elif ((tempOnLen > 0)  & (tempOffLen == 0)):
+                message = message + "out of date.\n"
+            elif ((tempOnLen > 0)  & (tempOffLen == 0)):
+                message = message + "offline.\n"
             
+            print(message)
 
+            if (tempOnLen > 0):
+                print(f"For your out of date systems, please let us know a good time to schedule a reboot for these systems:\n\n{header}")
+
+                for i in tempOn:
+                    print("\t" + i[0] + "\t\t\t" + i[1])
+                print("\nIt is important to keep these systems up to date to minimize security risk and ensure your computers run as effectively as possible.\n")
+            
+            if (tempOffLen > 0):
+                print(f"For you offline systems that are still in use, please boot these systems so we can ensure they are up to date:\n\n{header}")
+
+                for i in tempOff:
+                    print("\t" + i[0] + "\t\t\t" + i[1])
+                print("\nIf no longer in use, please let us know instead so we may act accordingly.\n")
+             
+            print("Thank you,\nAden and Kristin\n")
+            
+            input(f"_____Press \"Enter\" to move onto {currSite}_____")
+
+            # return to defaults
             tempOn = []
-            tempOnSize = 0
+            tempOnLen = 0
             tempOff = []
-            tempOffSize = 0
+            tempOffLen = 0
             siteHolder = currSite
-            # open file ~currSite~.txt
-                # analyze on and off to determine format of doc
-                    # append proper intro
-                    # append ood data (if needed)
-                    # append off data (if needed)
-                    # append exit
-            # close file
-            # update siteHolder -- siteHolder = currSite
-            # reset on and off holders
-
-            # bySite.append(siteListHolder) no more need probably
-            # writeToFile(currSite,messageP1,saveDir) no more need for this likely
-
-            # f = open(currSite, "a")
             
 
 
@@ -101,8 +104,8 @@ if __name__=="__main__":
     newDir = "GetWell_" + dateFormatted
     dirFolderName = newDir
 
-    os.mkdir(os.path.join(currDir,dirFolderName))
-    print("Creating new dir \"" + dirFolderName + "\"")
+    # os.mkdir(os.path.join(currDir,dirFolderName))
+    # print("Creating new dir \"" + dirFolderName + "\"")
     # main(sys.argv, dirFolderName)
     main(sys.argv)
 
