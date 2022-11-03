@@ -74,7 +74,7 @@ def main(path):
                     print("\t" + i[0] + "\t\t\t" + i[1])
                 print("\nIf no longer in use, please let us know instead so we may act accordingly.\n")
              
-            print("Thank you,\nAden and Kristin\n")
+            print("Thank you,\nAden and Kristen\n")
             
             input(f"_____Press \"Enter\" to move onto {currSite}_____")
 
