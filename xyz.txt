@@ -2,7 +2,7 @@ Get Well - Offline Systems [Action Required]
 
 Good Morning!
 
-We noticed that a couple of your systems appear to be offline. 
+We noticed that a couple of your systems appear to be offline.
 
 If still in use, please boot these systems so we can ensure they are up to date:
 	HERB-PC, last user hperson, last logon today
@@ -15,7 +15,7 @@ Aden and Kristin
 
 Good Morning!
 
-We noticed that a couple of your systems appear to be out of date. 
+We noticed that a couple of your systems appear to be out of date.
 
 Please let us know a good time to schedule a reboot for these systems:
 	JOHN-DESK, last user jdesk, last logon today
@@ -24,4 +24,4 @@ Please let us know a good time to schedule a reboot for these systems:
 It is important to keep these systems up to date to minimize security risk and ensure your computers run as effectively as possible.
 
 Thank you,
-Aden and Kristin
+Aden and Kristen
