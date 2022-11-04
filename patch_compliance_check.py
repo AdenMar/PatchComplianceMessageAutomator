@@ -7,31 +7,40 @@ import sys
 import os
 import datetime
 
-# remove all file writing and just print to command line maybe,
-# include stops between so user can go through at own pace
-# maybe add ability to customize hello message from "good morning"
+# args to add:
+# filter (on/off)
+# customizable open and closer
 
-# def main(path, saveDir):
-def main(path):
-    # path = "2022_10-28_patch_compliance.xlsx"
+def main(path, saveDir):
     wb = openpyxl.load_workbook(path[1])
     sh = wb["all"]
+    outF = open(saveDir, "a")
 
     tempOn = []
     tempOnLen = 0
     tempOff = []
     tempOffLen = 0
     siteHolder = sh.cell(2,8).value
+    header = []
 
-    input(f"_____Press \"Enter\" to move onto {siteHolder}_____")
+    for col in range(1,sh.max_column+1):
+        print(sh.cell(1,col).value)
+        header.append(sh.cell(1,col).value)
+    
+    colSite = header.index("Site Name") + 1
+    colLastUser = header.index("Last User") + 1
+    colName = header.index("Name") + 1
+    colStatus = header.index("Availability") + 1
+
+    # input(f"_____Press \"Enter\" to move onto {siteHolder}_____")
 
     # itterate through rows (start at 2 avoid header)
     # index bySite [n][0] is on [n][1] is off
     for row in range(2, sh.max_row+2): 
-        currSite = sh.cell(row,8).value
-        currLastUser = sh.cell(row,5).value
-        currName = sh.cell(row,2).value
-        currStatus = sh.cell(row,1).value
+        currSite = sh.cell(row,colSite).value
+        currLastUser = sh.cell(row,colLastUser).value
+        currName = sh.cell(row,colName).value
+        currStatus = sh.cell(row,colStatus).value
 
         # add status to on or off holders
         if (currStatus == "on"):
@@ -42,9 +51,9 @@ def main(path):
             tempOffLen += 1
         
         if (currSite != siteHolder):
-            print()
+            printAndWrite("",outF)
             message = "Good Morning!\n\nWe noticed that a couple of your systems appear to be "
-            header = "\tPC Name\t\t\tLast User\n"
+            header = "\tPC Name\t\tLast User"
 
             # used for testing
             # print(siteHolder)
@@ -58,25 +67,26 @@ def main(path):
             elif ((tempOnLen > 0)  & (tempOffLen == 0)):
                 message = message + "offline.\n"
             
-            print(message)
+            printAndWrite(message,outF)
 
             if (tempOnLen > 0):
-                print(f"For your out of date systems, please let us know a good time to schedule a reboot for these systems:\n\n{header}")
+                printAndWrite(f"For your out of date systems, please let us know a good time to schedule a reboot for these systems:\n\n{header}",outF)
 
                 for i in tempOn:
-                    print("\t" + i[0] + "\t\t\t" + i[1])
-                print("\nIt is important to keep these systems up to date to minimize security risk and ensure your computers run as effectively as possible.\n")
+                    printAndWrite("\t" + i[0] + "\t\t" + i[1] ,outF)
+                printAndWrite("\nIt is important to keep these systems up to date to minimize security risk and ensure your computers run as effectively as possible.\n",outF)
             
             if (tempOffLen > 0):
-                print(f"For you offline systems that are still in use, please boot these systems so we can ensure they are up to date:\n\n{header}")
+                printAndWrite(f"For you offline systems that are still in use, please boot these systems so we can ensure they are up to date:\n\n{header}",outF)
 
                 for i in tempOff:
-                    print("\t" + i[0] + "\t\t\t" + i[1])
-                print("\nIf no longer in use, please let us know instead so we may act accordingly.\n")
+                    printAndWrite("\t" + i[0] + "\t\t" + i[1],outF)
+                printAndWrite("\nIf no longer in use, please let us know instead so we may act accordingly.\n",outF)
              
-            print("Thank you,\nAden and Kristen\n")
+            printAndWrite("Thank you,\nAden and Kristen\n",outF)
             
-            input(f"_____Press \"Enter\" to move onto {currSite}_____")
+            # input(f"_____Press \"Enter\" to move onto {currSite}_____")
+            printAndWrite("___" + str(currSite) + "___",outF)
 
             # return to defaults
             tempOn = []
@@ -86,28 +96,24 @@ def main(path):
             siteHolder = currSite
             
 
+def printAndWrite(content, file):
+    file.write(content + "\n")
+    print(content)
 
-            
-            
-
-def writeToFile(fileName, contents, saveDir):
-    filePath = saveDir + "\\" + fileName + ".txt"
-    f = open(filePath, "a")
-    f.write(contents)
-    f.close()
-    
 if __name__=="__main__":
     date = datetime.datetime.utcnow()
-    dateFormatted = (str(date).split(" "))[0]
+    # dateFormatted = (str(date).split(" "))[0]
 
-    currDir = os.path.dirname(os.path.realpath(__file__))
-    newDir = "GetWell_" + dateFormatted
-    dirFolderName = newDir
+    # currDir = os.path.dirname(os.path.realpath(__file__))
+    # newDir = "GetWell_" + dateFormatted
+    # dirFolderName = newDir
+    newFile = "GetWell_" + str(date).replace(":","-") + ".txt"
+    
 
     # os.mkdir(os.path.join(currDir,dirFolderName))
     # print("Creating new dir \"" + dirFolderName + "\"")
-    # main(sys.argv, dirFolderName)
-    main(sys.argv)
+    main(sys.argv, newFile)
+    # main(sys.argv)
 
     # not working properly, runs mutliple times when main() is run
     # itterator = 0
