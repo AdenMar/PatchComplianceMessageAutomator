@@ -1,3 +1,5 @@
+Get Well - You have systems that require your attention
+
 Get Well - Offline Systems [Action Required]
 
 Good Morning!
@@ -25,3 +27,28 @@ It is important to keep these systems up to date to minimize security risk and e
 
 Thank you,
 Aden and Kristen
+
+------------ (use this)
+Get Well – Action Required
+ 
+We proactively monitor your computers for missing Critical and Security Updates of the Operating System and have identified the following issue(s) that require attention.
+
+Please review and let us know if you would like assistance with the action to be taken.
+
+
+Computer Name: 
+Last Logged in User: 
+Issue: 
+Action to be taken: 
+
+Computer Name: 
+Last Logged in User: 
+Issue: 
+Action to be taken: 
+ 
+ 
+Computer Name: 
+Last Logged in User: 
+Issue: 
+Action to be taken: 
+ 
