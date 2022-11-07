@@ -1,6 +1,6 @@
 # all data should be in sheet titled all within workbook
 # data should be organized by site
-# status indicators should be "on" and "off"
+# status indicators should be "on" and "off" - not anymore
 
 import openpyxl
 import sys
@@ -20,11 +20,10 @@ def main(path, saveDir):
     tempOnLen = 0
     tempOff = []
     tempOffLen = 0
-    siteHolder = sh.cell(2,8).value
     header = []
 
     for col in range(1,sh.max_column+1):
-        print(sh.cell(1,col).value)
+        # print(sh.cell(1,col).value)
         header.append(sh.cell(1,col).value)
     
     colSite = header.index("Site Name") + 1
@@ -32,7 +31,7 @@ def main(path, saveDir):
     colName = header.index("Name") + 1
     colStatus = header.index("Availability") + 1
 
-    # input(f"_____Press \"Enter\" to move onto {siteHolder}_____")
+    siteHolder = sh.cell(2,colSite).value
 
     # itterate through rows (start at 2 avoid header)
     # index bySite [n][0] is on [n][1] is off
@@ -41,17 +40,9 @@ def main(path, saveDir):
         currLastUser = sh.cell(row,colLastUser).value
         currName = sh.cell(row,colName).value
         currStatus = sh.cell(row,colStatus).value
-
-        # add status to on or off holders
-        if (currStatus == "on"):
-            tempOn.append([currName,currLastUser])
-            tempOnLen += 1
-        elif (currStatus == "off"):
-            tempOff.append([currName,currLastUser])
-            tempOffLen += 1
         
         if (currSite != siteHolder):
-            printAndWrite("",outF)
+            writeAndLog("",outF)
             message = "Good Morning!\n\nWe noticed that a couple of your systems appear to be "
             header = "\tPC Name\t\tLast User"
 
@@ -67,26 +58,25 @@ def main(path, saveDir):
             elif ((tempOnLen > 0)  & (tempOffLen == 0)):
                 message = message + "offline.\n"
             
-            printAndWrite(message,outF)
+            writeAndLog(message,outF)
 
             if (tempOnLen > 0):
-                printAndWrite(f"For your out of date systems, please let us know a good time to schedule a reboot for these systems:\n\n{header}",outF)
+                writeAndLog(f"For your out of date systems, please let us know a good time to schedule a reboot:\n\n{header}",outF)
 
                 for i in tempOn:
-                    printAndWrite("\t" + i[0] + "\t\t" + i[1] ,outF)
-                printAndWrite("\nIt is important to keep these systems up to date to minimize security risk and ensure your computers run as effectively as possible.\n",outF)
+                    writeAndLog("\t" + i[0] + "\t\t" + i[1] ,outF)
+                writeAndLog("\nIt is important to keep these systems up to date to minimize security risk and ensure your computers run as effectively as possible.\n",outF)
             
             if (tempOffLen > 0):
-                printAndWrite(f"For you offline systems that are still in use, please boot these systems so we can ensure they are up to date:\n\n{header}",outF)
+                writeAndLog(f"For your offline systems that are still in use, please boot them so we can ensure they are up to date:\n\n{header}",outF)
 
                 for i in tempOff:
-                    printAndWrite("\t" + i[0] + "\t\t" + i[1],outF)
-                printAndWrite("\nIf no longer in use, please let us know instead so we may act accordingly.\n",outF)
+                    writeAndLog("\t" + i[0] + "\t\t" + i[1],outF)
+                writeAndLog("\nIf no longer in use, please let us know instead so we may act accordingly.\n",outF)
              
-            printAndWrite("Thank you,\nAden and Kristen\n",outF)
+            writeAndLog("Thank you,\nAden and Kristen\n",outF)
             
-            # input(f"_____Press \"Enter\" to move onto {currSite}_____")
-            printAndWrite("___" + str(currSite) + "___",outF)
+            writeAndLog("___" + str(currSite) + "___",outF)
 
             # return to defaults
             tempOn = []
@@ -94,11 +84,21 @@ def main(path, saveDir):
             tempOff = []
             tempOffLen = 0
             siteHolder = currSite
+
+        # add status to on or off holders
+        if (currStatus == "true"):
+            tempOn.append([currName,currLastUser])
+            tempOnLen += 1
+        elif (currStatus == "false"):
+            tempOff.append([currName,currLastUser])
+            tempOffLen += 1
             
 
-def printAndWrite(content, file):
+def writeAndLog(content, file):
     file.write(content + "\n")
-    print(content)
+    # for debug perposes
+    # print("File Updated")
+    # print(content)
 
 if __name__=="__main__":
     date = datetime.datetime.utcnow()
