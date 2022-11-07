@@ -1,6 +1,6 @@
 
-*.xlsx
 *.code-workspace
+*.xlsx
+*.txt
 
 files\*
-*.txt
