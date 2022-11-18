@@ -4,7 +4,6 @@
 
 import openpyxl
 import sys
-import os
 import datetime
 
 # args to add:
@@ -68,32 +67,5 @@ def newMessage(site, file):
 
 if __name__=="__main__":
     date = datetime.datetime.utcnow()
-    # dateFormatted = (str(date).split(" "))[0]
-
-    # currDir = os.path.dirname(os.path.realpath(__file__))
-    # newDir = "GetWell_" + dateFormatted
-    # dirFolderName = newDir
     newFile = "GetWell_" + str(date).replace(":","-") + ".txt"
-    
-
-    # os.mkdir(os.path.join(currDir,dirFolderName))
-    # print("Creating new dir \"" + dirFolderName + "\"")
     main(sys.argv, newFile)
-    # main(sys.argv)
-
-    # not working properly, runs mutliple times when main() is run
-    # itterator = 0
-
-    # while True:
-    #     try:
-    #         # os.mkdir(os.path.join(currDir,dirFolderName))
-    #         # print("Creating new dir \"" + dirFolderName + "\"")
-    #         # main(sys.argv, dirFolderName)
-    #         break
-    #     except:
-    #         if itterator < 10:
-    #             itterator += 1
-    #             dirFolderName = (newDir + "(" + str(itterator) + ")")
-    #         else:
-    #             print("Failsafe: too many folders with same name convention")
-    #             break
